@@ -7,9 +7,10 @@ pages/<slug>.html (plain HTML, edit by hand); this script wraps each one in
 template.html and writes it to <site_dir>. The first page (About) becomes
 index.html; the others become <slug>.html.
 
-The jukebox rows come from tracks.csv (tab-delimited: title <TAB> url, with a
-header row) and replace {{JUKEBOX}} wherever it appears in a page.
-assets/ (logos) is copied alongside.
+The table rows come from items.csv (tab-delimited, with a header row; see
+ITEM_COLUMNS) and replace {{ITEMS}} wherever it appears in a page. They are
+plain HTML; assets/items.js adds search and pagination in the browser.
+assets/ (logos, items.js) is copied alongside.
 
 Template placeholders:
     {{PAGE_TITLE}}  text for <title>      {{TITLE}}    site title
@@ -29,7 +30,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE = os.path.join(HERE, "template.html")
 PAGES_DIR = os.path.join(HERE, "pages")
 ASSETS = os.path.join(HERE, "assets")          # copied to <site_dir>/assets
-TRACKS = os.path.join(HERE, "tracks.csv")
+ITEMS = os.path.join(HERE, "items.csv")
 TITLE = "GU Department of Linguistics Language Repository"
 
 # (slug, nav label) in nav order; the first is the home page (index.html)
@@ -40,25 +41,44 @@ PAGES = [
     ("contact", "Contact"),
 ]
 
+ITEM_COLUMNS = ["title", "language", "type", "creator", "date", "duration",
+                "description", "url", "media"]
+
 ROW = """\
-      <tr>
-        <td>{title}</td>
-        <td>
-          <div class="d-flex align-items-center gap-2">
-            <audio controls preload="none" class="flex-grow-1" style="min-width: 250px" src="{url}"></audio>
-            <a href="{url}" class="small text-nowrap">MP3</a>
-          </div>
-        </td>
-      </tr>"""
+        <tr data-lang="{language}" data-type="{type}" data-text="{text}">
+          <td><a href="{url}" target="_blank" rel="noopener">{title}</a></td>
+          <td>{language}</td>
+          <td>{type}</td>
+          <td>{creator}</td>
+          <td class="text-nowrap">{date}</td>
+          <td>{play}</td>
+        </tr>"""
+
+AUDIO = """\
+<div class="d-flex align-items-center gap-2">
+            <audio controls preload="none" class="flex-grow-1" style="min-width: 250px" src="{media}"></audio>
+            <span class="small text-nowrap">{duration}</span>
+          </div>"""
 
 
-def read_tracks(path):
-    """Return [(title, url), ...] from a tab-delimited file with a header row."""
+def read_items(path):
+    """Return a list of dicts from a tab-delimited file with a header row."""
     with open(path, encoding="utf-8", newline="") as fh:
-        rows = csv.reader(fh, delimiter="\t")
-        next(rows, None)  # header
-        return [(r[0].strip(), r[1].strip()) for r in rows
-                if len(r) >= 2 and r[1].strip()]
+        return [r for r in csv.DictReader(fh, delimiter="\t") if r.get("title")]
+
+
+def item_row(item):
+    e = {k: html.escape(item.get(k, ""), quote=True) for k in ITEM_COLUMNS}
+    if item["type"] == "Sound" and item["media"]:
+        e["play"] = AUDIO.format(**e)
+    elif item["type"] == "Video" and item["media"]:
+        d = f' <span class="small">({e["duration"]})</span>' if e["duration"] else ""
+        e["play"] = f'<a href="{e["media"]}" target="_blank" rel="noopener">Watch video</a>{d}'
+    else:
+        e["play"] = f'<a href="{e["url"]}" target="_blank" rel="noopener">View</a>'
+    text = " ".join(item.get(k, "") for k in ("title", "language", "type", "creator", "date", "description"))
+    e["text"] = html.escape(text.lower(), quote=True)
+    return ROW.format(**e)
 
 
 def filename(i, slug):
@@ -77,11 +97,9 @@ def nav_items(active):
 def build(out_dir):
     with open(TEMPLATE, encoding="utf-8") as fh:
         template = fh.read()
-    tracks = read_tracks(TRACKS)
-    rows = "\n".join(
-        ROW.format(title=html.escape(t), url=html.escape(u, quote=True))
-        for t, u in tracks
-    ) or '      <tr><td colspan="2">No recordings yet.</td></tr>'
+    items = read_items(ITEMS)
+    rows = "\n".join(item_row(i) for i in items) \
+        or '        <tr><td colspan="6">No items yet.</td></tr>'
 
     os.makedirs(out_dir, exist_ok=True)
     shutil.copytree(ASSETS, os.path.join(out_dir, "assets"), dirs_exist_ok=True,
@@ -89,7 +107,7 @@ def build(out_dir):
 
     for i, (slug, label) in enumerate(PAGES):
         with open(os.path.join(PAGES_DIR, f"{slug}.html"), encoding="utf-8") as fh:
-            content = fh.read().replace("{{JUKEBOX}}", rows)
+            content = fh.read().replace("{{ITEMS}}", rows)
         page_title = TITLE if i == 0 else f"{label} – {TITLE}"
         page = (template
                 .replace("{{PAGE_TITLE}}", html.escape(page_title))
@@ -98,7 +116,7 @@ def build(out_dir):
                 .replace("{{CONTENT}}", content))
         with open(os.path.join(out_dir, filename(i, slug)), "w", encoding="utf-8") as fh:
             fh.write(page)
-    print(f"built {len(PAGES)} pages in {out_dir} ({len(tracks)} track(s))")
+    print(f"built {len(PAGES)} pages in {out_dir} ({len(items)} item(s))")
 
 
 if __name__ == "__main__":

@@ -8,14 +8,14 @@ on GitHub Pages at <https://jblowe.github.io/gu-archive/>.
 
 - `template.html` – shared page shell (banner, nav bar, footer), styled after gauhati.ac.in
 - `pages/*.html` – the content of each page; plain HTML, edit by hand
-- `tracks.csv` – tab-delimited, header row `title<TAB>media`, one recording per line; fills the jukebox on the Collections page
-- `assets/` – logos (copied to `site/assets/`)
+- `items.csv` – tab-delimited, one archive item per line (`title language type creator date duration description url media`); fills the searchable, paginated table on the Collections page. Currently a snapshot of the CoRSAL Boro (BLR) and Dimasa (DLR) collections.
+- `assets/` – logos and `items.js` (table search/pagination), copied to `site/assets/`
 - `build_pages.py` – wraps each page in the template and writes `site/` (Python 3, no dependencies). The nav order and labels are the `PAGES` list at the top.
 - `deploy_pages.sh` – force-pushes `site/` to the `gh-pages` branch (needs `git` and `gh`)
 
 ## Usage
 
-Edit a page in `pages/` or add a line to `tracks.csv`, then:
+Edit a page in `pages/` or change `items.csv`, then:
 
 ```bash
 python3 build_pages.py     # build site/
