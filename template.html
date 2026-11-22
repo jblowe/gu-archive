@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{PAGE_TITLE}}</title>
+  <link rel="icon" href="assets/gu_logo.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;600;700&family=Noto+Serif+Bengali:wght@600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <style>
+    /* GU look-and-feel (colors and fonts taken from gauhati.ac.in) */
+    :root {
+      --gu-deep: #092936; --gu-primary: #0E3A4F; --gu-gold: #C28A30; --gu-gold-deep: #8A5E18;
+      --gu-line: #E3E6E9; --gu-tint: #E7EEF1;
+      --bs-body-font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --bs-body-bg: #FBFBFA; --bs-body-color: #1A1A1A;
+      --bs-link-color-rgb: 14, 58, 79; --bs-link-hover-color-rgb: 138, 94, 24;
+    }
+    h1, h2, h3, .gu-serif { font-family: Lora, "Noto Serif Bengali", Georgia, serif; }
+    h2 { color: var(--gu-primary); }
+    body { display: flex; flex-direction: column; min-height: 100vh; }   /* footer stays at the bottom */
+    main { flex: 1; }
+
+    /* header: dark bar with GU logo and name (left), CoRSAL logo (right) */
+    .gu-bar { background: var(--gu-deep); color: #fff; }
+    .gu-bar .container-fluid { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem 1rem; padding-top: .45rem; padding-bottom: .45rem; }
+    .gu-brand { display: flex; align-items: center; gap: .7rem; line-height: 1.3; flex: 1 1 0; min-width: 0; }
+    .gu-brand img, .gu-partner img { height: 44px; width: auto; }
+    .gu-brand .name { display: block; font: 600 16px Lora, "Noto Serif Bengali", Georgia, serif; }
+    .gu-bar .tag { display: block; font-size: 11px; letter-spacing: .03em; color: rgba(255,255,255,.7); }
+    .gu-partner { display: flex; align-items: center; gap: .6rem; margin-left: auto; text-align: right; line-height: 1.25; }
+    .gu-partner .name { font: 600 14px Lora, "Noto Serif Bengali", Georgia, serif; white-space: nowrap; }
+
+    /* every banner link behaves the same: text turns gold, its logo dims */
+    .gu-bar a { color: #fff; text-decoration: none; }
+    .gu-bar a:hover, .gu-brand:has(.gu-home:hover) .gu-home { color: var(--gu-gold); }
+    .gu-bar a:hover img, .gu-brand:has(.gu-home:hover) .gu-home img { opacity: .75; }
+
+    @media (max-width: 575.98px) {            /* phones: smaller type, tighter */
+      .gu-bar .container-fluid { column-gap: .5rem; }
+      .gu-brand img, .gu-partner img { height: 38px; }
+      .gu-brand { gap: .4rem; }
+      .gu-brand .name { font-size: 11.5px; }
+      .gu-partner { gap: .35rem; }
+      .gu-partner .name { font-size: 9px; }
+    }
+
+    /* nav bar: white, bold teal links, gold underline */
+    .gu-nav { background: #fff; border-bottom: 1px solid var(--gu-line); padding: 0; }
+    .gu-nav .navbar-brand, .gu-nav .nav-link { color: var(--gu-primary); font-weight: 600; font-size: 15px; }
+    .gu-nav .nav-link { padding: 1rem; border-bottom: 3px solid transparent; }
+    .gu-nav .nav-link:hover, .gu-nav .nav-link.active { border-bottom-color: var(--gu-gold); }
+    @media (min-width: 768px) { .gu-nav .nav-item:first-child .nav-link { padding-left: 0; } }
+    .gu-nav .navbar-brand:hover { color: var(--gu-gold-deep); }
+
+    .btn-gu { background: var(--gu-gold); border-color: var(--gu-gold); color: #1A1A1A; font-weight: 600; }
+    .btn-gu:hover { background: var(--gu-gold-deep); border-color: var(--gu-gold-deep); color: #fff; }
+
+    footer { background: var(--gu-primary); color: rgba(255,255,255,.85); }
+    footer a { color: #fff; }
+
+    /* page title band */
+    .gu-hero { background: var(--gu-primary); color: #fff; padding: 2rem 0; }
+    .gu-hero h1 { color: #fff; font-weight: 700; }
+    .gu-hero p { color: rgba(255,255,255,.85); font-size: 1.15rem; max-width: 40rem; margin: .75rem 0 0; }
+  </style>
+</head>
+<body>
+
+<header class="gu-bar">
+  <div class="container-fluid px-2 px-md-3">
+    <div class="gu-brand">
+      <a class="gu-home" href="https://gauhati.ac.in/" aria-label="Gauhati University home"><img src="assets/gu_logo.png" alt="Gauhati University seal"></a>
+      <div>
+        <span class="name">
+          <a class="gu-home" href="https://gauhati.ac.in/">Gauhati University<span class="d-none d-sm-inline"> &middot; </span><span lang="as" class="d-block d-sm-inline">গুৱাহাটী বিশ্ববিদ্যালয়</span></a>
+          <a class="d-block d-sm-inline ms-sm-4" href="https://gauhati.ac.in/departments/linguistics/">Department of Linguistics</a>
+        </span>
+        <span class="tag d-none d-sm-block">Established 1948<span class="d-none d-lg-inline"> &middot; Gopinath Bardoloi Nagar, Jalukbari, Guwahati 781014, Assam, India</span></span>
+      </div>
+    </div>
+    <a class="gu-partner" href="https://digital.library.unt.edu/explore/collections/CORSAL/" aria-label="CoRSAL: Computational Resource on South Asian Languages">
+      <span class="name">Computational Resource on<br>South Asian Languages</span>
+      <img src="assets/corsal_logo.jpg" alt="CoRSAL logo">
+    </a>
+  </div>
+</header>
+
+<nav class="navbar navbar-expand-md gu-nav">
+  <div class="container-fluid px-2 px-md-3">
+    <button class="navbar-toggler my-1" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+            aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand me-0 order-1 order-md-2" href="https://gauhati.ac.in/departments/linguistics/">GU Linguistics</a>
+    <div class="collapse navbar-collapse order-2 order-md-1" id="nav">
+      <ul class="navbar-nav">
+        {{NAV}}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="gu-hero">
+    <div class="container">
+      <h1>{{TITLE}}</h1>
+      <p>A growing record of the languages of our state, created by the students who speak them
+        and kept for the students who come next.</p>
+    </div>
+  </div>
+
+  <div class="container my-5">
+{{CONTENT}}
+  </div>
+</main>
+
+<footer class="py-3">
+  <div class="container small">
+    Maintained at <a href="https://gauhati.ac.in/">Gauhati University</a> with the
+    <a href="https://digital.library.unt.edu/explore/collections/CORSAL/">CoRSAL</a> archive.
+    &middot; <a href="https://gauhati.ac.in/departments/linguistics/">Department of Linguistics</a>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
